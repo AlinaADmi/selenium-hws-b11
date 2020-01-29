@@ -28,7 +28,7 @@ public class ElementsProperties {
     @Test
     public void checkSorting() throws InterruptedException {
         loginAsAdmin();
-        //checkCountriesSorting();
+        checkCountriesSorting();
         checkGeoZonesSorting();
     }
 
