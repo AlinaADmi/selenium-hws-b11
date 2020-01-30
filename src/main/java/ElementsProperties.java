@@ -29,7 +29,7 @@ public class ElementsProperties {
     public void checkSorting() throws InterruptedException {
         loginAsAdmin();
         checkCountriesSorting();
-        checkGeoZonesSorting();
+        //checkGeoZonesSorting();
     }
 
     private void checkGeoZonesSorting() {
@@ -60,9 +60,7 @@ public class ElementsProperties {
                 nativeZonesList.add(zone.getText());
             }
 
-            ArrayList<String> sortedZonesList = new ArrayList<>(nativeZonesList);
-            Collections.sort(sortedZonesList);
-            Assert.assertEquals(sortedZonesList, nativeZonesList);
+            assertSorting(nativeZonesList);
         }
     }
 
@@ -73,21 +71,40 @@ public class ElementsProperties {
         );
 
         ArrayList<String> nativeList = new ArrayList<>();
+        ArrayList<String> hrefs = new ArrayList<>();
 
         List<WebElement> elements = driver.findElements(
-                By.xpath("//a[contains(@href, 'country_code') and not(@title='Edit')]")
+                By.xpath("//a[contains(@href, 'country_code') and not(@title='Edit')]/parent::*")
         );
         for (WebElement element : elements) {
-            nativeList.add(element.getText());
-        }
-        ArrayList<String> sortedList = new ArrayList<>(nativeList);
+            element.findElement(By.tagName("a")).getText();
 
-        Collections.sort(sortedList);
-        Assert.assertEquals(sortedList, nativeList);
+            if (Integer.parseInt(
+                    element.findElement(By.xpath(".//parent::*/following-sibling::*")).getText()
+            ) > 0) {
+                hrefs.add(element.findElement(By.tagName("a")).getAttribute("href"));
+            }
+        }
+
+        assertSorting(nativeList);
+
+        //Check sorting of states for countries with states
+        checkCountryStatesSorting(hrefs);
     }
 
-    private void closePage() {
-        driver.close();
+    private void checkCountryStatesSorting(ArrayList<String> hrefs) {
+        for (int i = 0; i < hrefs.size(); i++) {
+            openPage(hrefs.get(i), "//button[@name='save']");
+            List<WebElement> elements = driver.findElements(
+                    By.xpath("//table[@id='table-zones']//*[contains(@name, '[name]') and @type = 'hidden']")
+            );
+
+            ArrayList<String> statesList = new ArrayList<>();
+            for (WebElement element : elements) {
+                statesList.add(element.getText());
+            }
+            assertSorting(statesList);
+        }
     }
 
     private void openPage(String url, String locator) {
@@ -100,6 +117,12 @@ public class ElementsProperties {
         driver.findElement(By.name("username")).sendKeys("admin");
         driver.findElement(By.name("password")).sendKeys("admin");
         driver.findElement(By.name("login")).click();
+    }
+
+    private void assertSorting(ArrayList<String> nativeList) {
+        ArrayList<String> sortedList = new ArrayList<>(nativeList);
+        Collections.sort(sortedList);
+        Assert.assertEquals(sortedList, nativeList);
     }
 
     @After
