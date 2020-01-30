@@ -84,9 +84,9 @@ public class HomeWorks {
 
     private void checkStickerType(WebElement element) {
         boolean isPresent;
-        isPresent = element.findElements(By.xpath(".//*[@class = 'sticker new']")).size() > 0
+        isPresent = element.findElements(By.xpath(".//*[contains(@class, 'sticker') and @class = 'sticker new']")).size() > 0
                 ||
-                element.findElements(By.xpath(".//*[@class = 'sticker sale']")).size() > 0;
+                element.findElements(By.xpath(".//*[contains(@class, 'sticker') and @class = 'sticker sale']")).size() > 0;
         Assert.assertTrue(
                 "The element has no sticker Sale or New",
                 isPresent
