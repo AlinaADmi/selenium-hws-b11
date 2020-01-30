@@ -68,7 +68,7 @@ public class HomeWorks {
         );
 
         //Fins all products cards
-        List<WebElement> elements = driver.findElements(By.cssSelector("li.product.column.shadow.hover-light"));
+        List<WebElement> elements = driver.findElements(By.cssSelector("li.product"));
 
         //Check each product card
         for (WebElement element : elements) {
