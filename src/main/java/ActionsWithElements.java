@@ -3,8 +3,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
 import java.security.SecureRandom;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -74,6 +76,74 @@ public class ActionsWithElements {
         logout();
         loginAsUser();
         logout();
+    }
+
+    @Test
+    public void addProduct() throws InterruptedException {
+        String path = "src/test/resources";
+
+        File file = new File(path);
+        String imagePath = file.getAbsolutePath() + "\\image.png";
+
+        loginAsAdmin();
+        //Open catalog
+        WebElement element = wait.until(visibilityOfElementLocated(By.xpath("//a[contains(@href, 'catalog')]")));
+        element.click();
+
+        //Click on Add product tab
+        element = wait.until((WebDriver d) -> d.findElement(By.xpath("//a[contains(@href, 'edit_product') and @class = 'button']")));
+        element.click();
+
+        wait.until((WebDriver d) -> d.findElement(By.name("code")));
+
+        String codeValue = generateRandomString(4);
+        driver.findElement(By.xpath("//input[@type = 'radio' and @value = 1]")).click();
+        driver.findElement(By.name("name[en]")).click();
+        driver.findElement(By.name("name[en]")).sendKeys(codeValue);
+        driver.findElement(By.name("code")).click();
+        driver.findElement(By.name("code")).sendKeys(codeValue);
+        driver.findElement(By.xpath("//input[@type = 'file']")).sendKeys(imagePath);
+        driver.findElement(By.xpath("//a[text() = 'Information']")).click();
+
+        element = wait.until((WebDriver d) -> d.findElement(By.name("manufacturer_id")));
+        element.click();
+
+        //Select first manufacture from the list of manufactures
+        Select manufacturer = new Select(driver.findElement(By.name("manufacturer_id")));
+        manufacturer.selectByIndex(1);
+
+        //Select first supplier from the list of Suppliers
+        Select supplier = new Select(driver.findElement(By.name("supplier_id")));
+        supplier.selectByIndex(2);
+
+        //Fill fields with descriptions
+        String lazyField = generateRandomString(10);
+        driver.findElement(By.xpath("//input[contains(@name, 'short_description')]")).sendKeys(lazyField);
+        driver.findElement(By.xpath("//*[@class ='trumbowyg-editor']")).sendKeys(lazyField);
+        driver.findElement(By.xpath("//input[contains(@name, 'head_title')]")).sendKeys(lazyField);
+        driver.findElement(By.xpath("//input[contains(@name, 'meta_description')]")).sendKeys(lazyField);
+
+        driver.findElement(By.xpath("//a[@href='#tab-prices']")).click();
+        wait.until(visibilityOfElementLocated(By.name("save")));
+        driver.findElement(By.name("purchase_price")).sendKeys("5");
+
+        //Purchase
+        driver.findElement(By.name("purchase_price_currency_code")).click();
+        driver.findElement(By.xpath("//option[@value='USD']")).click();
+
+        //Price and Tax
+        driver.findElement(By.name("prices[USD]")).sendKeys("10");
+        driver.findElement(By.name("prices[EUR]")).sendKeys("10");
+
+        //Click on Save button
+        driver.findElement(By.name("save")).click();
+    }
+
+    private void loginAsAdmin() {
+        driver.get("http://localhost/litecart/admin/");
+        driver.findElement(By.name("username")).sendKeys("admin");
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.name("login")).click();
     }
 
     private void loginAsUser() {
