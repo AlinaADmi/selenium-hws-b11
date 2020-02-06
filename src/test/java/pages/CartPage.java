@@ -6,8 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 public class CartPage extends Page {
@@ -21,7 +19,7 @@ public class CartPage extends Page {
         super(driver);
     }
 
-    public void removeFromCart() throws InterruptedException {
+    public void removeFromCart() {
         wait.until(visibilityOf(cartLink));
         cartLink.click();
         WebElement element;

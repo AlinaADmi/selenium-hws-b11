@@ -4,14 +4,12 @@ import app.Application;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.concurrent.TimeUnit;
-
 public class lessonPageObjects {
     public static ThreadLocal<Application> AppThread = new ThreadLocal<>();
     public Application app;
 
     @Before
-    public void start() throws InterruptedException {
+    public void start() {
         if (AppThread.get() != null) {
             app = AppThread.get();
             return;
@@ -28,7 +26,7 @@ public class lessonPageObjects {
     }
 
     @Test
-    public void addRemoveProductFromCart() throws InterruptedException {
+    public void addRemoveProductFromCart() {
         app.mainPage.open();
 
         for (int i = 1; i <= 3; i++) {

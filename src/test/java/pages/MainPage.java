@@ -5,18 +5,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-import java.util.concurrent.TimeUnit;
-
 public class MainPage extends Page {
 
     @FindBy(xpath = "//div[@class = 'content']//div[@class='name']")
     public WebElement menuItem;
 
-    public MainPage(WebDriver driver) throws InterruptedException {
+    public MainPage(WebDriver driver) {
         super(driver);
     }
 
-    public void chooseFirstItem() throws InterruptedException {
+    public void chooseFirstItem() {
         open();
         menuItem.click();
     }

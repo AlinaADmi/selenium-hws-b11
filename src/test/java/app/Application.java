@@ -15,7 +15,7 @@ public class Application {
     public CartPage cartPage;
     public ProductPage productPage;
 
-    public Application() throws InterruptedException {
+    public Application() {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 10);
         mainPage = new MainPage(driver);
